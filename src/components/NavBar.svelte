@@ -10,6 +10,7 @@
     //let position
     let height
     let marginTop
+    let marginHelper
 
     let screenWidth = document.documentElement.clientWidth;
 
@@ -29,12 +30,14 @@
             console.log(height)
             //position = "relative"
             marginTop = 50
+            marginHelper = 50
         } else {
             burgerTruthy = false
             rotation = 0
             opacity = 0
             height = 0
             marginTop = 0
+            marginHelper = 0
             //position = "absolute"
             
         }
@@ -51,6 +54,8 @@
             position = "absolute"
         }  else {
             opacity = 1
+            marginHelper = 0
+            marginTop = 30
             burgerTruthy === true ? burgerFunc() : burgerTruthy = false
             position = "relative"
         }
@@ -101,7 +106,7 @@
 <h1 
    class="nav-item" 
    style="opacity: {opacity};
-   margin-top: {marginTop * 2}px
+   margin-top: {marginTop + marginHelper}px
    ">
    Menu
 </h1>
@@ -112,7 +117,7 @@
 <h1 
    class="nav-item" 
    style="opacity: {opacity};
-   margin-top: {marginTop * 3}px
+   margin-top: {marginTop + marginHelper * 2}px
    ">
    Third page
 </h1>
@@ -121,6 +126,7 @@
 </div>
 
 <div id="test"></div>
+<div id="test2"></div>
 
 <style>
 
@@ -135,12 +141,22 @@
     #Nav {
         position: fixed;
         width: 100%;
+        z-index: 10;
     }
 
     #test {
-        position: absolute;
+        position: relative;
+        top: 100px;
         padding-bottom: 200vh;
-        width: 10%;
+        width: 100%;
+        background: pink;
+
+    }
+
+    #test2 {
+        width: 100%;
+        height: 20vh;
+        background-color: blue;
     }
 
 
@@ -188,7 +204,7 @@
             top: 100px;
             right: 0;
    
-            width:20%;
+            width:25%;
             background: black;
             transition: 0.5s;
         }
@@ -196,7 +212,7 @@
         h1 {
             font-size: medium;
             position: absolute;
-            transition: 0.5s;
+            transition: 0.3s;
         }
     }
 </style>
