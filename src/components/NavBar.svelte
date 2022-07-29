@@ -6,33 +6,37 @@
 
     let burgerTruthy = false
     let rotation = 0
-    let vh = 0
-    let display
-    let position
+    let opacity
+    //let position
     let height
+    let marginTop
 
     let screenWidth = document.documentElement.clientWidth;
 
     if(screenWidth <= 600) {
-        display = "none"
+        opacity = 0
     }  else {
-        display = "block"
+        opacity = 1
+
     }
 
     const burgerFunc = () => {
         if(burgerTruthy === false) {
             burgerTruthy = true
             rotation = 90
-            display = "block"
-            height = window.innerHeight - 304
+            opacity = 1
+            height = window.innerHeight - 100
             console.log(height)
-            position = "relative"
+            //position = "relative"
+            marginTop = 50
         } else {
             burgerTruthy = false
             rotation = 0
-            display = "none"
+            opacity = 0
             height = 0
-            position = "absolute"
+            marginTop = 0
+            //position = "absolute"
+            
         }
     }
 
@@ -43,11 +47,11 @@
     const resizeFunc = () => {
         screenWidth = document.documentElement.clientWidth
         if(screenWidth <= 600 && burgerTruthy === false) {
-            display = "none"
+            opacity = 0
             position = "absolute"
         }  else {
-            display = "block"
-            burgerTruthy = false
+            opacity = 1
+            burgerTruthy === true ? burgerFunc() : burgerTruthy = false
             position = "relative"
         }
     }
@@ -61,12 +65,12 @@
 
 
 
-    <div id="hamburger" class:burgerInvisible={screenWidth > 600} class:burgerVisible={screenWidth <= 600} on:click={burgerFunc}>
+    <div id="hamburger" style="padding: 10px" on:click={burgerFunc}>
         <Fa icon={faBars} scale={3} style="
-        margin-top: 30px;
-        transform: rotate({rotation}deg);
-        color: white;
-        transition: 0.5s;
+            margin-top: 30px;
+            transform: rotate({rotation}deg);
+            color: white;
+            transition: 0.5s;
         " />
     </div>
     
@@ -76,15 +80,18 @@
 
 
 <div id="nav-items"
+    
     style="padding-bottom: {height}px;"
-    class:extend={burgerTruthy === true}
-    class:retract={burgerTruthy === false}
 >
 
 
 <h1 
    class="nav-item" 
-   style="display: {display}; position: {position}">
+   
+   style="
+    opacity: {opacity};
+    margin-top: {marginTop}px
+   ">
    About us
 </h1>
 
@@ -93,7 +100,9 @@
 
 <h1 
    class="nav-item" 
-   style="display: {display}; position: {position}">
+   style="opacity: {opacity};
+   margin-top: {marginTop * 2}px
+   ">
    Menu
 </h1>
 
@@ -102,12 +111,16 @@
 
 <h1 
    class="nav-item" 
-   style="display: {display}; position: {position}">
+   style="opacity: {opacity};
+   margin-top: {marginTop * 3}px
+   ">
    Third page
 </h1>
 </div>
 
 </div>
+
+<div id="test"></div>
 
 <style>
 
@@ -118,20 +131,18 @@
         background: black;
         padding-bottom: 100px
     }
-    
-    .extend {
-        transition: 0.5s;
 
+    #Nav {
+        position: fixed;
+        width: 100%;
     }
 
-
-    .burger {
-
+    #test {
+        position: absolute;
+        padding-bottom: 200vh;
+        width: 10%;
     }
 
-    .noBurger {
-
-    }
 
 
     /*Character stuff*/
@@ -148,9 +159,11 @@
 
 
 
+
+
     h1 {
         margin: 30px 5%;
-        color: white
+        color: white;
     }
 
 
@@ -159,11 +172,6 @@
     #hamburger {
         position: absolute;
         display: none
-    }
-
-    .burgerVisible {
-        display: block;
-        right: 35px
     }
 
 
@@ -180,7 +188,6 @@
             top: 100px;
             right: 0;
    
-            /* height: 87vh; */
             width:20%;
             background: black;
             transition: 0.5s;
@@ -188,6 +195,8 @@
 
         h1 {
             font-size: medium;
+            position: absolute;
+            transition: 0.5s;
         }
     }
 </style>
