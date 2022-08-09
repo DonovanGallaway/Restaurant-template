@@ -3,19 +3,19 @@
     import { faBars } from '@fortawesome/free-solid-svg-icons'
     import { fade, blur, fly, slide, scale, crossfade } from 'svelte/transition';
     import { faGithub } from '@fortawesome/free-brands-svg-icons';
+    import { createEventDispatcher } from 'svelte'
 
+
+    const dispatch = createEventDispatcher()
+
+    export let tabs
 
     let burgerTruthy = false
     let rotation = 0
-    let opacity
-    //let position
     let height = document.documentElement.clientHeight * 0.90
-    let marginTop
-    let marginHelper
-    let position
     let burgerSize = 3
-
     let navBar = false
+    let currentTab = 'about us'
 
     let screenWidth = document.documentElement.clientWidth;
 
@@ -34,7 +34,6 @@
         if(burgerTruthy === false) {
             burgerTruthy = true
             rotation = 90
-            //height = window.innerHeight
             console.log(height)
         } else {
             burgerTruthy = false
@@ -54,53 +53,78 @@
             navBar = false
             burgerTruthy === true ? burgerFunc() : burgerTruthy = false
         }
+
+        if(document.documentElement.clientHeight <= 500) {
+            burgerSize = 2
+        } else {
+            burgerSize = 3
+        }
     }
 
     window.addEventListener("resize", resizeFunc)
 
 </script>
 
+
+<!--<div id="navSpace">-->
 <div id="stickyNav">
-<nav>
+    <nav>
 
 
-    {#if navBar}
-    <div id="hamburger" style="padding: 10px" on:click={burgerFunc}>
-        <Fa icon={faBars} scale={burgerSize} style="
-            transform: rotate({rotation}deg);
-            color: white;
-            transition: 0.5s;
-        " />
-    </div>
+        {#if navBar}
+        <div id="hamburger" style="padding: 10px" on:click={burgerFunc}>
+            <Fa icon={faBars} scale={burgerSize} style="
+                transform: rotate({rotation}deg);
+                color: white;
+                transition: 0.5s;
+            " />
+        </div>
 
-    {:else}
-    <div class="nav-items">
-        <h1 class="nav-item">About us</h1>
-        <h1 class="nav-item">Menu</h1>
-        <h1 class="nav-item">another page</h1>
-    </div>
+        {:else}
+        <div class="nav-items">
 
-    {/if}
+            {#each tabs as tab}
+                <div class="nav-item-container">
+                    <h1 class:chosenTab={currentTab ===tab} class="nav-item" on:click={() => {
+                        currentTab = tab
+                        dispatch('tabChange', tab)
+                    }}>{tab}</h1>
+                </div>
+            {/each}
+        </div>
 
-</nav>
+        {/if}
+
+    </nav>
 
 
 </div>
+<!--</div>-->
 
 {#if burgerTruthy}
     <div class="burgerContent" transition:fly={{y: -height, duration: 500, opacity: 1}}>
-        <h3 on:click={() => console.log('about me was clicked')} class="hambuger-item">About me</h3>
-        <h3 class="hambuger-item">menu</h3>
-        <h3 class="hambuger-item">Another page</h3>
+
+        {#each tabs as tab}
+            <h3 on:click={() => dispatch('tabChange', tab)} class="hamburger-item">{tab}</h3>
+        {/each} 
     </div>
 {/if}
 
-
+<!--<div id="test"></div>
+<div id="test2"></div>-->
 
 <style>
 
+    #navSpace {
+        position: relative;
+        top: 0;
+        left: 0;
+        padding-bottom: 10vh;
+    }
+
     #stickyNav {
-        position: fixed;
+        position: sticky;
+        top: 0;
         width: 100%;
         z-index: 5;
     }
@@ -110,7 +134,7 @@
         top: 0;
         left: 0;
         background: black;
-        padding-bottom: 15vh;
+        padding-bottom: 10vh;
         z-index: 2;
     }
 
@@ -120,12 +144,36 @@
         top: 50%;
         transform: translateY(-50%);
         width: 100%;
+        cursor: pointer;
+    }
+
+    .nav-item-container {
+        margin: auto; 
+        display: inline; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .nav-item {
+        position: absolute;
         color: white;
         display: inline;
         margin: auto;
+        transition: 0.1s;
+    }
+
+    .chosenTab {
+        font-size: 35px;
+        color:rgb(112, 130, 233)
+    }
+
+    .nav-item:hover {
+        color: rgb(150, 148, 148)
+    }
+
+    .nav-item:active {
+        font-size: 20px
     }
 
     .burgerContent {
@@ -139,10 +187,11 @@
         z-index: 1;
     }
 
-    .hambuger-item {
+    .hamburger-item {
         color: white;
         margin: 5px;
         margin-top: 20px;
+        cursor: pointer;
     }
 
     /*Burger stuff*/
@@ -158,7 +207,6 @@
 
     #test {
         position: relative;
-        top: 100px;
         padding-bottom: 200vh;
         width: 100%;
         background: pink;
@@ -173,6 +221,15 @@
 
 
     @media only screen and (max-width: 600px) {
+
+        nav {
+            padding-bottom: 15vh;
+        }
+        
+        #navSpace {
+            padding-bottom: 15vh;
+        }
+
         #hamburger {
             display: block;
             right: 7%;
@@ -194,47 +251,9 @@
         nav {
             padding-bottom: 70px
         }
+
+        #navSpace {
+            padding-bottom: 70px;
+        }
     }
 </style>
-
-
-<!--<div id="nav-items"
-    
-    style="padding-bottom: {height}px;"
->
-
-
-<h1 
-   class="nav-item" 
-   
-   style="
-    opacity: {opacity};
-    margin-top: {marginTop}px
-   ">
-   About us
-</h1>
-
-
-
-
-<h1 
-   class="nav-item" 
-   style="opacity: {opacity};
-   margin-top: {marginTop + marginHelper}px
-   ">
-   Menu
-</h1>
-
-
-
-
-<h1 
-   class="nav-item" 
-   style="opacity: {opacity};
-   margin-top: {marginTop + marginHelper * 2}px
-   ">
-   Third page
-</h1>
-</div>
-
-</div>-->
